@@ -1,5 +1,7 @@
 #!/bin/bash
 inputfile="/mnt/share/temp.log"
+file_pass="pass.txt"
+file_pass=$(cat "$file_pass")
 echo $inputfile
 cat $inputfile |  while read F
 do
@@ -10,5 +12,5 @@ do
   echo $CPU
   GPU=$(echo $F  | awk -F 'C, ' '{ print $2 }' | awk -F 'temp=' '{ print $2 }'  | awk -F ';' '{ print $1 }' | sed s/\'//)
   echo $GPU
-echo "INSERT INTO main(Date,CPU_TEMP,GPU_TEMP) VALUES ('$DATE','$CPU','$GPU');" | mysql -u root -pJavi020913 PI_TEMP
+echo "INSERT INTO main(Date,CPU_TEMP,GPU_TEMP) VALUES ('$DATE','$CPU','$GPU');" | mysql -u root -p$file_pass PI_TEMP
 done 
