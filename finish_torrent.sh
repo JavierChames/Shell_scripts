@@ -6,7 +6,7 @@
 	Series2TB=/mnt/share/Series
 	Series4TB=/mnt/share4TB/Series
 	app=false
-	file="/mnt/share/github/email.txt"
+	file="email.txt"
 	email=$(cat "$file")
 	flag=false
 	notregularfile=file
@@ -82,6 +82,12 @@
 							        fi
 									fi
 									}
+									
+		function moveto(){				
+					  echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
+					  transmission-remote -t $TORRENTID --move $MOVEDIR
+					  echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
+                        }
 
 	for TORRENTID in $TORRENTLIST
 	do
@@ -116,30 +122,25 @@
 					 else
 				Music_torrent_MP3=`transmission-remote -t $TORRENTID -if | grep mp3` #check if its a MP3 file
 				Music_torrent_FLAC=`transmission-remote -t $TORRENTID -if | grep flac` #check if its a flac file
+				application=`echo $Name1 | grep ISO`
 				   if  [[ "$Music_torrent_MP3" ]] || [[ "$Music_torrent_FLAC" ]]; then 
-                       found_availabe_space $TORRENTID Music
-					  transmission-remote -t $TORRENTID --move $MOVEDIR
-                                          echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
-				   else  
 				   
-				   if	 [[ $app == false ]]; then		   
-					found_availabe_space $TORRENTID Movie
-					  echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
-					  transmission-remote -t $TORRENTID --move $MOVEDIR
-					  echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
+                       found_availabe_space $TORRENTID Music
+                    moveto	
+                    else  
+				   xvid=`echo $Name1 | grep XviD`				   
+				   if  [[ $application ]]; then
+				     app=true
+					 else
+				   
+				     if [[ $app == false ]] && [[ $xvid ]]; then
+					   found_availabe_space $TORRENTID Movie
+					     echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
+					     transmission-remote -t $TORRENTID --move $MOVEDIR
+					     echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
 				   else 	  
-				   xvid=`$Name1 | grep Xvid`
-				   if  [[Name1]]; then
-				   echo "im xvid file"
-				   found_availabe_space $TORRENTID Movie
-					  echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
-					  transmission-remote -t $TORRENTID --move $MOVEDIR
-					  echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
-				   else 
-				found_availabe_space $TORRENTID Apps
-				   echo "Moving downloaded file(s) to $MOVEDIR" #its something else
-					  transmission-remote -t $TORRENTID --move $MOVEDIR
-					  echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
+				         found_availabe_space $TORRENTID Apps
+				         moveto
 				   fi
 				  fi
 				fi
