@@ -1,12 +1,13 @@
 #!/bin/bash
+cd /home/pi/scripts
 cpuTemp0=$(cat /sys/class/thermal/thermal_zone0/temp)
 cpuTemp1=$(($cpuTemp0/1000))
 cpuTemp2=$(($cpuTemp0/100))
 cpuTempM=$(($cpuTemp2 % $cpuTemp1))
 gpuTemp=`/opt/vc/bin/vcgencmd measure_temp | awk -F '=' '{ print $2 }' | awk -F ';' '{ print $1 }' | sed s/\'//`
-file_email="email.txt"
+file_email="/home/pi/scripts/email.txt"
 email=$(cat "$file_email")
-file_pass="pass.txt"
+file_pass="/home/pi/scripts/pass.txt"
 file_pass=$(cat "$file_pass")
 # Function to write the temperature into the log
 #function writeToLog() {

@@ -1,7 +1,7 @@
 #/bin/bash
-file_email="email.txt"
+file_email="/home/pi/scripts/email.txt"
 email=$(cat "$file_email")
-API_file="api.txt"
+API_file="/home/pi/scripts/api.txt"
 API=$(cat "$API_file")
 DIRECTORY="/home/pi/Torrent"
 if [ -e /home/pi/Torrent/*.zip ]; then

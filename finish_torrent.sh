@@ -6,7 +6,7 @@
 	Series2TB=/mnt/share/Series
 	Series4TB=/mnt/share4TB/Series
 	app=false
-	file="email.txt"
+	file="/home/pi/scripts/email.txt"
 	email=$(cat "$file")
 	flag=false
 	notregularfile=file
@@ -92,12 +92,13 @@
 	for TORRENTID in $TORRENTLIST
 	do
 		# check if torrent download is completed & location is only in tmp folder
-		DL_COMPLETED=`transmission-remote -t $TORRENTID -i | grep "Percent Done: 100%"`
-		LOCATION=`transmission-remote -t $TORRENTID -i | grep "Location: /mnt/share4TB/tmp"`
-		 Name1=`transmission-remote -t $TORRENTID -i | grep Name | awk -F ':' '{print $2}' | cut -c 2- |  tr . ' '` # Zaguri Empire S02E05 720p HDTV x264-LironTV mkv
-		 Series=`transmission-remote -t $TORRENTID -i | grep Name | grep S[0-9][0-9]E[0-9][0-9]` #'  Name: Zaguri.Empire.S02E05.720p.HDTV.x264-LironTV.mkv'
-		  if   [  "$LOCATION"  ] && [  "$DL_COMPLETED"  ]; then #Check if current torrent is in tmp folder and state of current torrent is 100 % done
-			 if [ "$Series" ]; then #if its a series then...
+				LOCATION=`transmission-remote -t $TORRENTID -i | grep "Location: /mnt/share4TB/tmp"`
+                DL_COMPLETED=`transmission-remote -t $TORRENTID -i | grep "Percent Done: 100%"`
+		  if   [  "$LOCATION"  ] && [  "$DL_COMPLETED"  ]; then  #Check if current torrent is in tmp folder and state of current torrent is 100 % done
+     		 Name1=`transmission-remote -t $TORRENTID -i | grep Name | awk -F ':' '{print $2}' | cut -c 2- |  tr . ' '` # Zaguri Empire S02E05 720p HDTV x264-LironTV mkv
+	    	 Series=`transmission-remote -t $TORRENTID -i | grep Name | grep S[0-9][0-9]E[0-9][0-9]` #'  Name: Zaguri.Empire.S02E05.720p.HDTV.x264-LironTV.mkv'
+             Series_Full_season=`transmission-remote -t $TORRENTID -i | grep Name | grep S[0-9][0-9]`
+			 if [ "$Series" ] | [ "$Series_Full_season" ] ; then #if its a series then...
 				SeriesName=`echo $Name1 | awk -F "S[0-9][0-9]E[0-9][0-9]" '{print $1}'`
 				 if [[ "$SeriesName" =~ \ |\' ]] ; then
 						  serie_space=true
@@ -107,8 +108,8 @@
 						for i in "${array[@]}"
 					      do
 					             i=$(echo $i | awk -F '/' '{print $1}')
-					                    if [[ $SeriesName =~ $i ]] | [[ `echo $SeriesName | awk  '{print tolower($0)}'`  =~ $i ]]; then
-						                    found_series  $i
+					                    if [[ $SeriesName =~ $i  || `echo $SeriesName | awk  '{print tolower($0)}'`  =~ $i ]]; then
+										    found_series  $i
 						                    break
 						                else 
 										   continue
