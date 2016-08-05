@@ -6,13 +6,13 @@
 	Series2TB=/mnt/share/Series
 	Series4TB=/mnt/share4TB/Series
 	app=false
-	file="/home/pi/scripts/email.txt"
-	email=$(cat "$file")
+	#file="/home/pi/scripts/email.txt"
+	email=$(cat "/home/pi/scripts/email.txt")
 	flag=false
 	notregularfile=file
 	serie_space=false
 	x=0
-
+	
 	# use transmission-remote to get torrent list from transmission-remote list
 	# use sed to delete first / last line of output, and remove leading spaces
 	# use cut to get first field from each line
@@ -88,8 +88,7 @@
 					  transmission-remote -t $TORRENTID --move $MOVEDIR
 					  echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
                         }
-
-	for TORRENTID in $TORRENTLIST
+for TORRENTID in $TORRENTLIST
 	do
 		# check if torrent download is completed & location is only in tmp folder
 				LOCATION=`transmission-remote -t $TORRENTID -i | grep "Location: /mnt/share4TB/tmp"`

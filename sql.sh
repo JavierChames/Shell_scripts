@@ -1,7 +1,6 @@
 #!/bin/bash
 inputfile="/mnt/share/temp.log"
-file_pass="pass.txt"
-file_pass=$(cat "$file_pass")
+file_pass=$(cat "pass.txt")
 echo $inputfile
 cat $inputfile |  while read F
 do

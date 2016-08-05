@@ -1,18 +1,21 @@
 #/bin/bash
-file_email="/home/pi/scripts/email.txt"
-email=$(cat "$file_email")
-API_file="/home/pi/scripts/api.txt"
-API=$(cat "$API_file")
+#file_email="/home/pi/scripts/email.txt"
+email=$(cat "/home/pi/scripts/email.txt")
+#API_file="/home/pi/scripts/api.txt"
+API=$(cat "/home/pi/scripts/api.txt")
 DIRECTORY="/home/pi/Torrent"
-if [ -e /home/pi/Torrent/*.zip ]; then
-    for zipfile in /home/pi/Torrent/*.zip
+Zip_files="/home/pi/Torrent/*.zip"
+if [ -e $Zip_files ]; then
+    for zipfile in /$Zip_files
       do 
         unzip  $zipfile -d /home/pi/Torrent
      done 
      rm $zipfile
 fi
 if [ "$(ls -A  $DIRECTORY)" ]; then 
-  for f in /home/pi/Torrent/*.torrent
+  #for f in /home/pi/Torrent/*.torrent
+  for f in $DIRECTORY"&/*.torrent"
+
      do 
          t=$(echo "$f" | awk -F'Torrent/'  '{print $2}' | awk -F'.torrent' '{print $1}' | tr '.' ' ')
 		 res=$(transmission-remote -a $f )
