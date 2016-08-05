@@ -1,7 +1,5 @@
 #/bin/bash
-#file_email="/home/pi/scripts/email.txt"
 email=$(cat "/home/pi/scripts/email.txt")
-#API_file="/home/pi/scripts/api.txt"
 API=$(cat "/home/pi/scripts/api.txt")
 DIRECTORY="/home/pi/Torrent"
 Zip_files="/home/pi/Torrent/*.zip"
@@ -13,9 +11,7 @@ if [ -e $Zip_files ]; then
      rm $zipfile
 fi
 if [ "$(ls -A  $DIRECTORY)" ]; then 
-  #for f in /home/pi/Torrent/*.torrent
   for f in $DIRECTORY"&/*.torrent"
-
      do 
          t=$(echo "$f" | awk -F'Torrent/'  '{print $2}' | awk -F'.torrent' '{print $1}' | tr '.' ' ')
 		 res=$(transmission-remote -a $f )
@@ -24,21 +20,19 @@ if [ "$(ls -A  $DIRECTORY)" ]; then
 		  case $res in
 	        *duplicate*)
 			echo  "$t" | mail -s  "$res"  $file_email
-			
+
            ;;
 			*Timeout*)
 			echo  Will try agian in 5 minutes | mail -s  Timeout was reached  $file_email
 	       ;;
 		   *corrupt*)
 			echo  Check the File | mail -s  "Torrent $t is Corrupted"  $file_email
-			
 	       ;;
 		  esac
 		 else
 		 curl -u $API: https://api.pushbullet.com/v2/pushes -d type=note -d title="Added new file to download" -d body="Added $t to download"
           #echo Added "$t" to download| mail -s  "Added $t for download"  $file_email
           rm $f
-	      
 		 fi
      done
 else
