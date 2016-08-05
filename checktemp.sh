@@ -5,9 +5,7 @@ cpuTemp1=$(($cpuTemp0/1000))
 cpuTemp2=$(($cpuTemp0/100))
 cpuTempM=$(($cpuTemp2 % $cpuTemp1))
 gpuTemp=`/opt/vc/bin/vcgencmd measure_temp | awk -F '=' '{ print $2 }' | awk -F ';' '{ print $1 }' | sed s/\'//`
-#file_email="/home/pi/scripts/email.txt"
 email=$(cat "/home/pi/scripts/email.txt")
-#file_pass="/home/pi/scripts/pass.txt"
 file_pass=$(cat "/home/pi/scripts/pass.txt")
 # Function to write the temperature into the log
 #function writeToLog() {
