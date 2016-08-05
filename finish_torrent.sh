@@ -6,7 +6,6 @@
 	Series2TB=/mnt/share/Series
 	Series4TB=/mnt/share4TB/Series
 	app=false
-	#file="/home/pi/scripts/email.txt"
 	email=$(cat "/home/pi/scripts/email.txt")
 	flag=false
 	notregularfile=file
