@@ -1,4 +1,4 @@
-	#!/bin/bash 
+#!/bin/bash
         # the folder to move completed downloads to
 	clear
 	unset array
@@ -11,7 +11,7 @@
 	notregularfile=file
 	serie_space=false
 	x=0
-	
+
 	# use transmission-remote to get torrent list from transmission-remote list
 	# use sed to delete first / last line of output, and remove leading spaces
 	# use cut to get first field from each line
@@ -19,7 +19,7 @@
 	TORRENTLIST=`transmission-remote  -l | sed -e '1d;$d;s/^ *//' | cut --only-delimited --delimiter=" "  --fields=1`
 	# for each torrent in the list
 
-	 function found_series() {
+	 found_series() {
 								arg1=$1
 								echo "Moving downloaded file(s) to $MOVEDIR/$arg1 | awk -F '/' '{print $1}'"
 								 transmission-remote -t $TORRENTID --move "$MOVEDIR/$arg1"
@@ -27,7 +27,7 @@
 								flag=true
 								}
 
-	function found_availabe_space() {
+	 found_availabe_space() {
 								spaceindrivesda1=`df -h | grep sda1  | awk -F" " '{ print $4 }' | awk -F"G" '{ print $1 }' | awk -F"." '{ print $1 }'`
 								arg1=$1
                                 arg2=$2
@@ -81,13 +81,13 @@
 							        fi
 									fi
 									}
-									
-		function moveto(){				
+
+		 moveto(){
 					  echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
 					  transmission-remote -t $TORRENTID --move $MOVEDIR
 					  echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
                         }
-for TORRENTID in $TORRENTLIST
+	for TORRENTID in $TORRENTLIST
 	do
 		# check if torrent download is completed & location is only in tmp folder
 				LOCATION=`transmission-remote -t $TORRENTID -i | grep "Location: /mnt/share4TB/tmp"`
@@ -100,7 +100,7 @@ for TORRENTID in $TORRENTLIST
 				SeriesName=`echo $Name1 | awk -F "S[0-9][0-9]E[0-9][0-9]" '{print $1}'`
 				 if [[ "$SeriesName" =~ \ |\' ]] ; then
 						  serie_space=true
-						  SeriesName=$(echo $SeriesName | sed 's/ //g') #Set Series name witouth spaces
+						  SeriesName=$(echo $SeriesName | sed 's/ /_/g') #Set Series name witouth spaces
 				 fi
 				 found_availabe_space $TORRENTID Series #call to check space in disk
 						for i in "${array[@]}"
@@ -114,30 +114,28 @@ for TORRENTID in $TORRENTLIST
 			   		fi
 				  done
 					  if [[ $flag == false ]]; then #added manually but folder doesn't exists
-
-			#mkdir $MOVEDIR$SeriesName
 						   found_series $SeriesName
 					 fi
 					 else
 				Music_torrent_MP3=`transmission-remote -t $TORRENTID -if | grep mp3` #check if its a MP3 file
 				Music_torrent_FLAC=`transmission-remote -t $TORRENTID -if | grep flac` #check if its a flac file
-				application=`echo $Name1 | grep ISO`
+				application_ISO=`echo $Name1 | grep ISO`
+				application_iso=`echo $Name1 | grep iso`
 				   if  [[ "$Music_torrent_MP3" ]] || [[ "$Music_torrent_FLAC" ]]; then 
-				   
+
                        found_availabe_space $TORRENTID Music
-                    moveto	
-                    else  
-				   xvid=`echo $Name1 | grep XviD`				   
-				   if  [[ $application ]]; then
+                    moveto
+                    else
+				   xvid=`echo $Name1 | grep XviD`
+				   if  [[ $application_ISO ]] || [[ $application_iso ]] ; then
 				     app=true
-					 else
-				   
-				     if [[ $app == false ]] && [[ $xvid ]]; then
+			 	#else
+				     if [[ $app == false ]] || [[ $xvid ]]; then
 					   found_availabe_space $TORRENTID Movie
 					     echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
 					     transmission-remote -t $TORRENTID --move $MOVEDIR
 					     echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
-				   else 	  
+				   else
 				         found_availabe_space $TORRENTID Apps
 				         moveto
 				   fi
