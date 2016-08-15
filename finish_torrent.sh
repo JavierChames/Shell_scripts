@@ -127,10 +127,12 @@
                     moveto
                     else
 				   xvid=`echo $Name1 | grep XviD`
+				   #echo $app
 				   if  [[ $application_ISO ]] || [[ $application_iso ]] ; then
 				     app=true
 			 	#else
-				     if [[ $app == false ]] || [[ $xvid ]]; then
+				fi
+				     if [[ $app == false ]] || [[ $xvid ]] ; then
 					   found_availabe_space $TORRENTID Movie
 					     echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
 					     transmission-remote -t $TORRENTID --move $MOVEDIR
@@ -141,18 +143,19 @@
 				   fi
 				  fi
 				fi
-				fi
-		else
-		continue
-		fi
-		while [ `free -m | grep Mem | awk -F ' ' '{print $4}'` -lt 150 ]; do
-		sleep 5
-		let "x++"
-		if [ $x == 12 ]; then
-		sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"
-		    break
-		fi
-		done
+#else
+#fi
+		echo `free -m | grep Mem | awk -F ' ' '{print $4}'`
+		   while [ `free -m | grep Mem | awk -F ' ' '{print $4}'` -lt 150 ]; do
+		      sleep 5
+		      let "x++"
+	          if [ $x == 12 ]; then
+				sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"
+		   break
+		      fi
+		  done
 		x=0
 		flag=false
+		fi
+		continue
 	done
