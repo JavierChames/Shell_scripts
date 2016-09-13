@@ -33,7 +33,10 @@
                                 arg2=$2
 								echo $arg1
 								echo $arg2
-
+								 if [[ $spaceindrivesda1 =~ M ]] && [[ $arg2="Apps" ]]; then
+								    MOVEDIR=/mnt/share4TB/Apps
+								   return
+                                 fi
 								if  [[ `transmission-remote -t $TORRENTID -i | grep Downloaded | awk -F": " '{ print $2 }'` =~ MB ]]; then
 				                        spaceindrivesda1=$spaceindrivesda1*1000
 				                        spaceindrivesda1=$spaceindrivesda1-1000
@@ -70,7 +73,7 @@
 	                            					fi
 								              else
 									          if [ $arg2 == Apps ] ; then 
-                                                 if [[ $spaceindrivesda1  -gt `transmission-remote -t  $TORRENTID -i | grep Downloaded | awk -F": " '{ print $2 }'  | awk -F"MB" '{ print $1 }' | awk -F"." '{ print $1 }'` ]]  ; then
+											      if [[ $spaceindrivesda1  -gt `transmission-remote -t  $TORRENTID -i | grep Downloaded | awk -F": " '{ print $2 }'  | awk -F"MB" '{ print $1 }' | awk -F"." '{ print $1 }'` ]]  ; then
                                                          MOVEDIR=/mnt/share/Apps
                                                  else 
                                                          MOVEDIR=/mnt/share4TB/Apps
@@ -121,6 +124,7 @@
 				Music_torrent_FLAC=`transmission-remote -t $TORRENTID -if | grep flac` #check if its a flac file
 				application_ISO=`echo $Name1 | grep ISO`
 				application_iso=`echo $Name1 | grep iso`
+				application_exe=`transmission-remote -t $TORRENTID -if | grep exe`
 				   if  [[ "$Music_torrent_MP3" ]] || [[ "$Music_torrent_FLAC" ]]; then 
 
                        found_availabe_space $TORRENTID Music
@@ -128,7 +132,7 @@
                     else
 				   xvid=`echo $Name1 | grep XviD`
 				   #echo $app
-				   if  [[ $application_ISO ]] || [[ $application_iso ]] ; then
+				   if  [[ $application_ISO ]] || [[ $application_iso ]] || [[ $application_exe ]]; then
 				     app=true
 			 	#else
 				fi
