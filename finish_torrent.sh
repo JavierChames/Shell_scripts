@@ -33,10 +33,17 @@
                                 arg2=$2
 								echo $arg1
 								echo $arg2
-								 if [[ $spaceindrivesda1 =~ M ]] && [[ $arg2="Apps" ]]; then
-								    MOVEDIR=/mnt/share4TB/Apps
+								 if [[ $spaceindrivesda1 =~ M ]]; then
+								  case "$arg2" in
+								   "Apps")
+								   MOVEDIR=/mnt/share4TB/Apps;;
+								   "Series")
+								   MOVEDIR=/mnt/share4TB/Series;;
+								   "Movie")
+								   MOVEDIR=/mnt/share4TB/Movies;;
+								   esac
 								   return
-                                 fi
+								  else
 								if  [[ `transmission-remote -t $TORRENTID -i | grep Downloaded | awk -F": " '{ print $2 }'` =~ MB ]]; then
 				                        spaceindrivesda1=$spaceindrivesda1*1000
 				                        spaceindrivesda1=$spaceindrivesda1-1000
@@ -82,6 +89,7 @@
 
                                    			fi
 							        fi
+									fi
 									fi
 									}
 
