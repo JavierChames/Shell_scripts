@@ -2,7 +2,7 @@
 email=$(cat "/home/pi/scripts/email.txt")
 API=$(cat "/home/pi/scripts/api.txt")
 DIRECTORY="/home/pi/Torrent"
-readarray -t myarray <  torrent.txt
+readarray -t myarray <  "/home/pi/scripts/torrent.txt"
 u=${myarray[0]} 
 p=${myarray[1]}
 if [ -e /home/pi/Torrent/*.zip ]; then

@@ -11,7 +11,7 @@
 	notregularfile=file
 	serie_space=false
 	x=0
-	readarray -t myarray <  torrent.txt
+	readarray -t myarray <  "/home/pi/scripts/torrent.txt"
     u=${myarray[0]} 
     p=${myarray[1]} 
 		
@@ -132,8 +132,8 @@
 					 else
 				Music_torrent_MP3=`transmission-remote -n $u:$p -t $TORRENTID -if | grep mp3` #check if its a MP3 file
 				Music_torrent_FLAC=`transmission-remote -n $u:$p -t $TORRENTID -if | grep flac` #check if its a flac file
-				application_ISO=`echo $Name1 | grep ISO`
-				application_iso=`echo $Name1 | grep iso`
+				application_ISO=`transmission-remote -n $u:$p -t $TORRENTID -if | grep ISO`
+				application_iso=`transmission-remote -n $u:$p -t $TORRENTID -if | grep iso`
 				application_exe=`transmission-remote -n $u:$p -t $TORRENTID -if | grep exe`
 				   if  [[ "$Music_torrent_MP3" ]] || [[ "$Music_torrent_FLAC" ]]; then 
 
