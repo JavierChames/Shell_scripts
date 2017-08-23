@@ -4,6 +4,7 @@ cpuTemp0=$(cat /sys/class/thermal/thermal_zone0/temp)
 cpuTemp1=$(($cpuTemp0/1000))
 cpuTemp2=$(($cpuTemp0/100))
 cpuTempM=$(($cpuTemp2 % $cpuTemp1))
+CPU="$cpuTemp1"."$cpuTempM"
 gpuTemp=`/opt/vc/bin/vcgencmd measure_temp | awk -F '=' '{ print $2 }' | awk -F ';' '{ print $1 }' | sed s/\'//`
 email=$(cat "/home/pi/scripts/email.txt")
 file_pass=$(cat "/home/pi/scripts/pass.txt")
@@ -32,9 +33,9 @@ echo  $cpuTemp1.$cpuTempM"C"
 echo  $gpuTemp
 COMMENT
 
-echo "INSERT INTO main(Date,CPU_TEMP,GPU_TEMP) VALUES (NOW(),'$cpuTemp1.$cpuTempM"C"','$gpuTemp');" | mysql -u root -p$file_pass PI_TEMP
+echo "INSERT INTO main(Date,CPU_TEMP,GPU_TEMP) VALUES (NOW(),'$CPU"C"','$gpuTemp');" | mysql -u root -p$file_pass PI_TEMP
 echo "INSERT INTO HD_TEMP(Date,HD_Temp2TB,HD_Temp4TB) VALUES (NOW(),'$Temp_2TB','$Temp_4TB');" | mysql -u root -p$file_pass PI_TEMP
-
+curl -s "http://10.0.0.7:8084/json.htm?type=command&param=udevice&idx=40&nvalue=0&svalue="+$CPU
 
 #writeToLog "$(date): CPU temp - $cpuTemp1.$cpuTempM'C, GPU temp - $gpuTemp;"
 

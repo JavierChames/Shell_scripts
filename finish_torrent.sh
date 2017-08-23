@@ -40,13 +40,14 @@ subtitle() {
 		arg1=$1
 		echo "Moving downloaded file(s) to $MOVEDIR/$arg1 | awk -F '/' '{print $1}'"
 		transmission-remote -n $u:$p -t $TORRENTID --move "$MOVEDIR/$arg1" 
-		echo "$Name1" finish download...and moved to "$MOVEDIR/$arg1"   | mail -s  "Finish $Name1" $email 
+		echo "$Name1" finish download...and moved to "$MOVEDIR/$arg1"   | mail -s  "Finish $Name1" $email  -aFrom:"Javier PI Server"
 		flag=true
 	}
 	
 	
 	found_availabe_space() {
-		spaceindrivesda1=`df -h | grep sda1  | awk -F" " '{ print $4 }' | awk -F"G" '{ print $1 }' | awk -F"." '{ print $1 }'`
+		spaceindrivesda1=`df -h | grep -w share  | awk -F" " '{ print $4 }' | awk -F"G" '{ print $1 }' | awk -F"." '{ print $1 }'`
+		 
 		arg1=$1
 		arg2=$2
 		#echo $arg1
@@ -59,6 +60,8 @@ subtitle() {
 		MOVEDIR=/mnt/share4TB/Series;;
 		"Movie")
 		MOVEDIR=/mnt/share4TB/Movies;;
+		"Music")
+		MOVEDIR=/mnt/share4TB/Music;;
 		esac
 		return
 		else
@@ -69,6 +72,8 @@ subtitle() {
 		MOVEDIR=/mnt/share/Series;;
 		"Movie")
 		MOVEDIR=/mnt/share/Movies;;
+		"Music")
+		MOVEDIR=/mnt/share/Music;;
 		esac
 		return
 		
@@ -123,7 +128,7 @@ subtitle() {
 	moveto(){
 		echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
 		transmission-remote -n $u:$p -t $TORRENTID --move $MOVEDIR 
-		echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email
+		echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email  -aFrom:"Javier PI Server"
 	}
 
 	for TORRENTID in $TORRENTLIST
@@ -158,35 +163,31 @@ subtitle() {
 										found_series $SeriesName
 									fi
 									else
-										Music_torrent_MP3=`transmission-remote -n $u:$p -t $TORRENTID -if | grep mp3` #check if its a MP3 file
-										Music_torrent_FLAC=`transmission-remote -n $u:$p -t $TORRENTID -if | grep flac` #check if its a flac file
-										application_ISO=`transmission-remote -n $u:$p -t $TORRENTID -if | grep ISO`
-										application_iso=`transmission-remote -n $u:$p -t $TORRENTID -if | grep iso`
-										application_exe=`transmission-remote -n $u:$p -t $TORRENTID -if | grep exe`
+										Music_torrent_MP3=`transmission-remote -n $u:$p -t $TORRENTID -if | grep -i mp3` #check if its a MP3 file
+										Music_torrent_FLAC=`transmission-remote -n $u:$p -t $TORRENTID -if | grep -i flac` #check if its a flac file
+										application_ISO=`transmission-remote -n $u:$p -t $TORRENTID -if | grep -i ISO`
+										application_exe=`transmission-remote -n $u:$p -t $TORRENTID -if | grep -i exe`
 										if  [[ "$Music_torrent_MP3" ]] || [[ "$Music_torrent_FLAC" ]]; then 
 											found_availabe_space $TORRENTID Music
 											moveto
 										else
 											xvid=`echo $Name1 | grep XviD`
 											BDRip=`echo $Name1 | grep BDRip`
-	#				   if  [[ ! `echo $Name1 | grep  '1080\|720'` ]] ; then
-		#				    app=true
-	#				    fi
-											if  [[ $application_ISO ]] || [[ $application_iso ]] || [[ $application_exe ]]  || [[ ! `echo $Name1 | grep  '1080\|720'` ]] ; then
+	                        		    fi
+											if  [[ $application_iso ]] || [[ $application_exe ]]  || [[ ! `echo $Name1 | grep  '1080\|720'` ]] ; then
 												app=true
 											fi
 												if [[ $app == false ]] || [[ $xvid ]] || [[ $BDRip ]]; then
 													found_availabe_space $TORRENTID Movie
 	echo "Moving downloaded file(s) to $MOVEDIR" #its a Movie so move it to movie
 													transmission-remote -n $u:$p -t $TORRENTID --move $MOVEDIR 
-	echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email 
+	echo "$Name1" finish download...and moved to "$MOVEDIR"  | mail -s  "Finish $Name1" $email  -aFrom:"Javier PI Server"
 												else
 													found_availabe_space $TORRENTID Apps
 													moveto
 												fi
 											fi
 										fi
-#:<<"1"
 
 			while [ `ls  /mnt/share4TB/tmp/ |  grep $Full_Name` ]
 			do
@@ -194,11 +195,10 @@ subtitle() {
  				echo 'file still in tmp folder'
 			done
 				echo 'file moved to destination'
-#1
+
 				subtitle
 				x=0
 				flag=false
 					fi
-			fi
 continue
 done
